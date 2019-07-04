@@ -9,6 +9,7 @@ import codecs
 
 root_addr = "http://localhost:3000"
 
+## Get all playlists info
 def getPlaylists():
 
     hot_playlists_api = root_addr + "/top/playlist"
@@ -20,7 +21,7 @@ def getPlaylists():
 
     return playlists
 
-
+## Get single playlist
 def getPlaylistDetail(playlist_id, proxy):
 
     songs = []
@@ -34,6 +35,7 @@ def getPlaylistDetail(playlist_id, proxy):
 
     return songs
 
+## Get comment given song id
 def getComment(id, proxy):
 
     comments = []
@@ -54,10 +56,12 @@ def getComment(id, proxy):
 
     return comments
 
+## Update proxy every 10 minutes
 def refreshProxies():
     Util.Refresh()
     threading.Timer(10 * 60, refreshProxies).start()
 
+## Validate if given proxy can work as expected
 def validateProxy(proxy):
 
     try:
@@ -87,6 +91,7 @@ def validateProxy(proxy):
         print(proxy)
         return True
 
+## Get current proxy
 def getProxyForList():
     
     proxy = (Util.Get())['http']  
@@ -95,11 +100,14 @@ def getProxyForList():
     
     return proxy
 
+
 def main():
 
+    # Initialize proxy database
     ProxiesDataBase.InitDB()
-
+    # Proxy setup
     refreshProxies()
+    # Get all playlists
     playlists = getPlaylists()
 
     all_playlists_names = []
@@ -109,9 +117,8 @@ def main():
 
     for i in range(len(data)):
         all_playlists_names.append(data[i][0])
-    
-    print(all_playlists_names)
 
+    # Save comments to json file
     for i in range(len(playlists)):
         
         playlist_name = playlists[i]['name']
@@ -141,6 +148,7 @@ def main():
 
     print("All comments has been crawled.\nFinalizing sequence.")
     os._exit(0)
+
 
 if __name__== "__main__":
     main()
